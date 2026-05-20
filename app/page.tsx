@@ -1,65 +1,121 @@
-import Image from "next/image";
+import { supabase, getPhotoUrl, type Memory, type GalleryPhoto } from '@/lib/supabase'
+import MapView from './MapView'
+import FloatingHearts from './FloatingHearts'
 
-export default function Home() {
+export const revalidate = 60
+
+async function getMemories(): Promise<Memory[]> {
+  const { data, error } = await supabase
+    .from('relationship_memories')
+    .select('*')
+    .order('order_index', { ascending: true })
+
+  if (error) {
+    console.error('Failed to load memories:', error.message)
+    return []
+  }
+  return (data ?? []) as Memory[]
+}
+
+async function getGallery(): Promise<GalleryPhoto[]> {
+  const { data, error } = await supabase
+    .from('relationship_gallery')
+    .select('*')
+    .order('order_index', { ascending: true })
+
+  if (error) {
+    console.error('Failed to load gallery:', error.message)
+    return []
+  }
+  return (data ?? []) as GalleryPhoto[]
+}
+
+export default async function Home() {
+  const [memories, gallery] = await Promise.all([getMemories(), getGallery()])
+
+  // Pre-resolve public photo URLs on the server so the client never has to
+  // know about Supabase storage paths.
+  const memoriesWithUrls = memories.map((m) => ({
+    ...m,
+    image_url: getPhotoUrl(m.image_path),
+  }))
+
+  const galleryWithUrls = gallery.map((g) => ({
+    ...g,
+    image_url: getPhotoUrl(g.image_path),
+  }))
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <main className="relative min-h-screen overflow-x-hidden">
+      <FloatingHearts />
+
+      <section className="relative z-10 flex flex-col items-center justify-center pt-20 pb-12 px-6 text-center">
+        <p className="uppercase tracking-[0.4em] text-xs text-accent-soft/80 mb-4">
+          Carnegie Mellon · Pittsburgh
+        </p>
+        <h1 className="text-5xl sm:text-6xl md:text-7xl font-semibold bg-gradient-to-b from-white via-pink-100 to-pink-300 bg-clip-text text-transparent leading-tight">
+          One Month With You
+        </h1>
+        <p className="mt-6 max-w-xl text-pink-100/80 text-lg">
+          A little map of the places that made this month feel like home.
+          Tap a star to relive a memory.
+        </p>
+      </section>
+
+      <section className="relative z-10 px-4 sm:px-6 max-w-6xl mx-auto w-full">
+        <div className="rounded-3xl overflow-hidden border border-pink-400/20 shadow-[0_0_60px_-20px_rgba(255,61,119,0.6)]">
+          <MapView memories={memoriesWithUrls} />
+        </div>
+        <p className="text-center text-xs text-pink-100/50 mt-3">
+          {memoriesWithUrls.length} memories pinned · scroll & pinch to explore
+        </p>
+      </section>
+
+      <section className="relative z-10 py-20 px-6 max-w-6xl mx-auto w-full">
+        <h2 className="text-4xl sm:text-5xl font-semibold text-center bg-gradient-to-b from-white to-pink-200 bg-clip-text text-transparent mb-3">
+          More Memories
+        </h2>
+        <p className="text-center text-pink-100/70 mb-10">
+          A few more moments I never want to forget.
+        </p>
+
+        {galleryWithUrls.length === 0 ? (
+          <p className="text-center text-pink-100/50">
+            No photos in the gallery yet.
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
-  );
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+            {galleryWithUrls.map((photo) => (
+              <figure
+                key={photo.id}
+                className="group relative rounded-2xl overflow-hidden border border-pink-400/15 bg-zinc-900/40 transition hover:border-pink-400/40 hover:-translate-y-1 hover:shadow-[0_10px_40px_-10px_rgba(255,61,119,0.55)]"
+              >
+                {photo.image_url ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={photo.image_url}
+                    alt={photo.caption ?? 'Memory photo'}
+                    className="h-72 w-full object-cover transition duration-500 group-hover:scale-105"
+                  />
+                ) : (
+                  <div className="h-72 w-full flex items-center justify-center text-pink-200/40 text-sm">
+                    photo coming soon
+                  </div>
+                )}
+                {photo.caption && (
+                  <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-4 text-sm text-pink-50">
+                    {photo.caption}
+                  </figcaption>
+                )}
+              </figure>
+            ))}
+          </div>
+        )}
+      </section>
+
+      <footer className="relative z-10 py-10 text-center text-xs text-pink-100/40">
+        made with love · one month, infinite more to go
+      </footer>
+    </main>
+  )
 }

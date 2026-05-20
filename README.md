@@ -1,36 +1,92 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# One Month With You — CMU Relationship Map
 
-## Getting Started
+A romantic, interactive Next.js site that maps your favorite places around CMU /
+Pittsburgh. Star-shaped pins open memory popups with photos and captions, and
+there's a separate gallery section for extra photos. All content (memories +
+photos) is stored in **Supabase**.
 
-First, run the development server:
+## Stack
+
+- Next.js 16 (App Router) + React 19
+- Tailwind CSS v4
+- Leaflet + OpenStreetMap (CartoDB dark tiles) — no API key required
+- Supabase for the memory data + photo storage
+
+## 1. Configure environment variables
+
+Create / edit `.env.local` in the project root:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+NEXT_PUBLIC_SUPABASE_URL=https://zrmvlvasfbykrnmfhczh.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_46oe__aij27mbJLjuJPLhw_7EnMN-Xx
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The Supabase values above point at the project that already has the
+`relationship_memories` and `relationship_gallery` tables seeded. No
+map token is needed — tiles come from free OpenStreetMap / CartoDB.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 2. Install and run
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm install
+npm run dev
+```
 
-## Learn More
+Open <http://localhost:3000>.
 
-To learn more about Next.js, take a look at the following resources:
+## 3. Add your photos to Supabase Storage
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+All photos live in the public `images` bucket on Supabase. The seed memories
+expect photos at the paths below — upload your real photos to these paths (or
+update the `image_path` column in the `relationship_memories` /
+`relationship_gallery` tables to point at whatever paths you upload to).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+In the Supabase dashboard → Storage → `images`:
 
-## Deploy on Vercel
+```
+relationship-map/
+  photos/
+    cut.jpg
+    porch.jpg
+    park.jpg
+    coffee.jpg
+  gallery/
+    photo1.jpg
+    photo2.jpg
+    photo3.jpg
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+You can also upload directly from the Supabase MCP/SQL editor.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 4. Add or edit memories
+
+The data lives in two tables in Supabase:
+
+- `public.relationship_memories` — pins on the map
+  - `title`, `location`, `caption`, `image_path`, `lng`, `lat`, `order_index`,
+    optional `happened_on`
+- `public.relationship_gallery` — bonus photos in the gallery grid
+  - `image_path`, `caption`, `order_index`
+
+Add rows via the Supabase dashboard or SQL — the site re-fetches every 60s
+(`revalidate = 60` in `app/page.tsx`).
+
+## 5. Deploy to Vercel
+
+1. Push this repo to GitHub.
+2. Import it on <https://vercel.com>.
+3. In the project settings, add the two environment variables from step 1.
+4. Deploy and share the live link. ❤️
+
+## Project structure
+
+```
+app/
+  layout.tsx          # global metadata, romantic background
+  page.tsx            # server component — fetches memories + gallery
+  MapView.tsx         # client — Leaflet map, star pins, memory modal
+  FloatingHearts.tsx  # client — ambient floating hearts/sparkles
+  globals.css         # romantic theme + star pin animations
+lib/
+  supabase.ts         # Supabase client + storage URL helper + types
+```
