@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0a0410;
-  --foreground: #fde9f1;
+  --background: #000000;
+  --foreground: #ffffff;
   --accent: #ff6b9d;
   --accent-strong: #ff3d77;
   --accent-soft: #ffd1e0;
@@ -26,13 +26,8 @@ body {
   scroll-behavior: smooth;
 }
 
-/* Soft animated background glow behind the whole page */
 .romantic-bg {
-  background:
-    radial-gradient(60% 50% at 20% 10%, rgba(255, 61, 119, 0.18) 0%, transparent 60%),
-    radial-gradient(50% 40% at 85% 15%, rgba(160, 80, 255, 0.18) 0%, transparent 60%),
-    radial-gradient(70% 60% at 50% 100%, rgba(255, 107, 157, 0.12) 0%, transparent 70%),
-    var(--background);
+  background: var(--background);
 }
 
 /* === Star pin === */
@@ -99,9 +94,8 @@ body {
   100% { transform: translateY(-110vh) scale(1.1); opacity: 0; }
 }
 
-/* Leaflet tweaks to fit the dark romantic theme */
 .leaflet-container {
-  background: #0a0410;
+  background: var(--background);
   font-family: var(--font-sans), system-ui, sans-serif;
   outline: none;
 }
