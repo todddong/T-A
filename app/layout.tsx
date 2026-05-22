@@ -19,7 +19,7 @@ const dancingScript = Dancing_Script({
 });
 
 export const metadata: Metadata = {
-  title: "One Month With You",
+  title: "T + A",
   description:
     "A little map of our memories around Pittsburgh and CMU — one month and counting.",
 };
