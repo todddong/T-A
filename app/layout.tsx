@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Dancing_Script } from "next/font/google";
 import "./globals.css";
+import LoveEnvelope from "./LoveEnvelope";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,7 +35,10 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${dancingScript.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col romantic-bg">{children}</body>
+      <body className="min-h-full flex flex-col romantic-bg">
+        <LoveEnvelope />
+        {children}
+      </body>
     </html>
   );
 }
