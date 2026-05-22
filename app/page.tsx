@@ -1,5 +1,6 @@
 import { supabase, getPhotoUrl, type Memory, type GalleryPhoto } from '@/lib/supabase'
 import MapView from './MapView'
+import GalleryGrid from './GalleryGrid'
 
 export const revalidate = 60
 
@@ -47,12 +48,26 @@ export default async function Home() {
   return (
     <main className="relative min-h-screen overflow-x-hidden">
       <section className="relative z-10 flex flex-col items-center justify-center pt-20 pb-12 px-6 text-center">
-        <h1
-          style={{ fontFamily: 'var(--font-script), "Brush Script MT", cursive' }}
-          className="font-bold text-[3.5rem] sm:text-[5rem] md:text-[6rem] leading-[1] text-white"
-        >
-          T <span>+</span> A
-        </h1>
+        <div className="flex items-center justify-center gap-4 sm:gap-6 md:gap-8">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/todd.jpg"
+            alt="Todd"
+            className="h-16 w-16 sm:h-24 sm:w-24 md:h-28 md:w-28 rounded-full object-cover border-2 border-pink-400/60 shadow-[0_0_30px_-5px_rgba(255,61,119,0.7)]"
+          />
+          <h1
+            style={{ fontFamily: 'var(--font-script), "Brush Script MT", cursive' }}
+            className="font-bold text-[3.5rem] sm:text-[5rem] md:text-[6rem] leading-[1] text-white"
+          >
+            T <span>+</span> A
+          </h1>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/annissa.jpg"
+            alt="Annissa"
+            className="h-16 w-16 sm:h-24 sm:w-24 md:h-28 md:w-28 rounded-full object-cover border-2 border-pink-400/60 shadow-[0_0_30px_-5px_rgba(255,61,119,0.7)]"
+          />
+        </div>
       </section>
 
       <section className="relative z-10 px-4 sm:px-6 max-w-6xl mx-auto w-full">
@@ -69,34 +84,7 @@ export default async function Home() {
           more photos
         </h2>
 
-        {galleryWithUrls.length === 0 ? null : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
-            {galleryWithUrls.map((photo) => (
-              <figure
-                key={photo.id}
-                className="group relative rounded-2xl overflow-hidden border border-pink-400/15 bg-zinc-900/40 transition hover:border-pink-400/40 hover:-translate-y-1 hover:shadow-[0_10px_40px_-10px_rgba(255,61,119,0.55)]"
-              >
-                {photo.image_url ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={photo.image_url}
-                    alt={photo.caption ?? 'Memory photo'}
-                    className="h-72 w-full object-cover transition duration-500 group-hover:scale-105"
-                  />
-                ) : (
-                  <div className="h-72 w-full flex items-center justify-center text-pink-200/40 text-sm">
-                    photo coming soon
-                  </div>
-                )}
-                {photo.caption && (
-                  <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-4 text-sm text-pink-50">
-                    {photo.caption}
-                  </figcaption>
-                )}
-              </figure>
-            ))}
-          </div>
-        )}
+        <GalleryGrid photos={galleryWithUrls} />
       </section>
 
     </main>
