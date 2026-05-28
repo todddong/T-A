@@ -167,7 +167,7 @@ export default function LoveEnvelope() {
           ref={popupRef}
           role="dialog"
           aria-label="Message"
-          className={`fixed top-16 right-4 z-50 w-72 h-[26rem] max-w-[calc(100vw-2rem)] rounded-md border border-amber-200/50 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.6),0_8px_20px_rgba(0,0,0,0.3)] ${
+          className={`fixed top-20 right-4 z-50 w-80 max-w-[calc(100vw-2rem)] max-h-[calc(100vh-6rem)] overflow-y-auto rounded-md border border-amber-200/50 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.6),0_8px_20px_rgba(0,0,0,0.3)] ${
             closing ? 'letter-close' : 'letter-open'
           }`}
           style={{ backgroundColor: '#fdf6e8' }}
@@ -190,25 +190,34 @@ export default function LoveEnvelope() {
               <path d="M6 6l12 12M18 6L6 18" />
             </svg>
           </button>
-          <div className="h-full flex items-center justify-center px-8">
+          <div className="px-8 pt-12 pb-20 flex flex-col items-center gap-4">
             <p
               style={{
                 fontFamily: 'var(--font-script), "Brush Script MT", cursive',
                 color: '#2a1f1a',
               }}
-              className="text-4xl text-center leading-tight"
+              className="text-3xl text-center leading-tight"
             >
               happy 1 month
             </p>
+            <p
+              style={{
+                fontFamily: 'var(--font-script), "Brush Script MT", cursive',
+                color: '#2a1f1a',
+              }}
+              className="text-xl text-center leading-snug"
+            >
+              I miss you a lot and look forward to spending more time with you and making more memories together. I can&apos;t wait to try every matcha spot with you in Pittsburgh next year.
+            </p>
+            <svg
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              aria-hidden="true"
+              className="mt-2 h-7 w-7 text-red-500 drop-shadow-[0_0_8px_rgba(239,68,68,0.35)]"
+            >
+              <path d="M12 21s-7.5-4.8-9.5-9.5C1 7.5 4.3 4 7.7 4c1.9 0 3.4 1 4.3 2.3C12.9 5 14.4 4 16.3 4c3.4 0 6.7 3.5 5.2 7.5C19.5 16.2 12 21 12 21z" />
+            </svg>
           </div>
-          <svg
-            viewBox="0 0 24 24"
-            fill="currentColor"
-            aria-hidden="true"
-            className="absolute bottom-6 left-1/2 -translate-x-1/2 h-7 w-7 text-red-500 drop-shadow-[0_0_8px_rgba(239,68,68,0.35)]"
-          >
-            <path d="M12 21s-7.5-4.8-9.5-9.5C1 7.5 4.3 4 7.7 4c1.9 0 3.4 1 4.3 2.3C12.9 5 14.4 4 16.3 4c3.4 0 6.7 3.5 5.2 7.5C19.5 16.2 12 21 12 21z" />
-          </svg>
         </div>
       )}
     </>
