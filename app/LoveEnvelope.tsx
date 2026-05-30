@@ -207,7 +207,7 @@ export default function LoveEnvelope() {
               }}
               className="text-xl text-center leading-snug"
             >
-              I miss you a lot and look forward to spending more time with you and making more memories together. I can&apos;t wait to try every matcha spot with you in Pittsburgh next year.
+              I miss you and can&apos;t wait to try every matcha spot with you in Pittsburgh next year.
             </p>
             <svg
               viewBox="0 0 24 24"
