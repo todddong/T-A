@@ -1,6 +1,7 @@
 import { supabase, getPhotoUrl, type Memory, type GalleryPhoto } from '@/lib/supabase'
 import MapView from './MapView'
 import GalleryGrid from './GalleryGrid'
+import AnniversaryCountdown from './AnniversaryCountdown'
 
 export const revalidate = 60
 
@@ -48,7 +49,8 @@ export default async function Home() {
   return (
     <main className="relative min-h-screen overflow-x-hidden">
       <section className="relative z-10 flex flex-col items-center justify-center pt-20 pb-12 px-6 text-center">
-        <div className="flex items-center justify-center gap-4 sm:gap-6 md:gap-8">
+        <AnniversaryCountdown />
+        <div className="mt-6 sm:mt-0 flex items-center justify-center gap-4 sm:gap-6 md:gap-8">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/todd.jpg"
