@@ -29,6 +29,8 @@ export type Memory = {
   lat: number
   happened_on: string | null
   order_index: number
+  city: string
+  state: string
 }
 
 export type GalleryPhoto = {
@@ -36,4 +38,20 @@ export type GalleryPhoto = {
   image_path: string
   caption: string | null
   order_index: number
+}
+
+export type Person = 'todd' | 'annissa'
+
+export type CityInfo = {
+  city: string
+  state: string
+}
+
+export type CityRanking = {
+  id: string
+  person: Person
+  city: string
+  state: string
+  rank: number | null
+  updated_at: string
 }

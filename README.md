@@ -60,13 +60,25 @@ You can also upload directly from the Supabase MCP/SQL editor.
 
 ## 4. Add or edit memories
 
-The data lives in two tables in Supabase:
+The data lives in three tables in Supabase:
 
 - `public.relationship_memories` — pins on the map
   - `title`, `location`, `caption`, `image_path`, `lng`, `lat`, `order_index`,
-    optional `happened_on`
+    `city`, `state`, optional `happened_on`
+  - **`city`/`state` are required** — they're what drives the two ranking
+    lists next to the map. Use the city/state the pin should be grouped
+    under. Adding memories for a brand-new city automatically makes that
+    city show up (unranked) in both ranking lists — no code changes needed.
+  - Keep `city`/`state` to **big cities only** (e.g. a memory in Cary, NC
+    or Georgetown, DC should still be tagged `Raleigh`/`NC` or
+    `Washington`/`DC`) rather than every small suburb/neighborhood — this
+    keeps the ranking lists to a manageable set of cities to actually rank.
 - `public.relationship_gallery` — bonus photos in the gallery grid
   - `image_path`, `caption`, `order_index`
+- `public.relationship_city_rankings` — Todd's and Annissa's drag-to-rank
+  order for each city (`person`, `city`, `state`, `rank`). Written
+  automatically by the app via `/api/rankings`; you shouldn't need to edit
+  this table by hand.
 
 Add rows via the Supabase dashboard or SQL — the site re-fetches every 60s
 (`revalidate = 60` in `app/page.tsx`).
@@ -83,10 +95,13 @@ Add rows via the Supabase dashboard or SQL — the site re-fetches every 60s
 ```
 app/
   layout.tsx          # global metadata, romantic background
-  page.tsx            # server component — fetches memories + gallery
+  page.tsx            # server component — fetches memories + gallery + rankings
   MapView.tsx         # client — Leaflet map, star pins, memory modal
+  CityRankings.tsx     # client — draggable per-person city ranking list
+  api/rankings/route.ts # server route — saves ranking order (service role)
   FloatingHearts.tsx  # client — ambient floating hearts/sparkles
   globals.css         # romantic theme + star pin animations
 lib/
   supabase.ts         # Supabase client + storage URL helper + types
+  supabase-admin.ts   # server-only Supabase client (service role key)
 ```

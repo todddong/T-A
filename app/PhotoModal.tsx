@@ -2,16 +2,20 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
+import { isVideoUrl } from '@/lib/media'
 
 type Props = {
   imageUrl: string | null
   alt: string
   onClose: () => void
+  /** Keep the cream polaroid mat around the photo, matching the gallery album. */
+  framed?: boolean
+  caption?: string | null
 }
 
 const CLOSE_ANIM_MS = 200
 
-export default function PhotoModal({ imageUrl, alt, onClose }: Props) {
+export default function PhotoModal({ imageUrl, alt, onClose, framed, caption }: Props) {
   const [closing, setClosing] = useState(false)
   const closeTimerRef = useRef<number | null>(null)
   const modalRef = useRef<HTMLDivElement | null>(null)
@@ -70,8 +74,12 @@ export default function PhotoModal({ imageUrl, alt, onClose }: Props) {
     >
       <div
         ref={modalRef}
-        className={`relative max-w-md w-full rounded-3xl overflow-hidden border border-pink-400/30 shadow-[0_20px_80px_-10px_rgba(255,61,119,0.6)] pointer-events-auto ${
+        className={`relative max-w-md w-full pointer-events-auto ${
           closing ? 'photo-close' : 'photo-open'
+        } ${
+          framed
+            ? 'bg-[#faf5ea] p-3 pb-8 rounded-[2px] shadow-[0_30px_90px_-15px_rgba(0,0,0,0.75)]'
+            : 'rounded-3xl overflow-hidden border border-pink-400/30 shadow-[0_20px_80px_-10px_rgba(255,61,119,0.6)]'
         }`}
       >
         <button
@@ -82,17 +90,39 @@ export default function PhotoModal({ imageUrl, alt, onClose }: Props) {
           ×
         </button>
 
-        {imageUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={imageUrl}
-            alt={alt}
-            className="block w-full h-auto max-h-[80vh] object-contain bg-black"
-          />
-        ) : (
-          <div className="w-full h-72 flex items-center justify-center bg-zinc-800 text-pink-200/60 text-sm">
-            photo coming soon
-          </div>
+        <div className={framed ? 'overflow-hidden' : undefined}>
+          {imageUrl ? (
+            isVideoUrl(imageUrl) ? (
+              <video
+                src={imageUrl}
+                controls
+                playsInline
+                className="block w-full h-auto max-h-[75vh] bg-black"
+              >
+                <track kind="captions" />
+              </video>
+            ) : (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={imageUrl}
+                alt={alt}
+                className="block w-full h-auto max-h-[75vh] object-contain bg-black"
+              />
+            )
+          ) : (
+            <div className="w-full h-72 flex items-center justify-center bg-zinc-800 text-pink-200/60 text-sm">
+              photo coming soon
+            </div>
+          )}
+        </div>
+
+        {framed && caption && (
+          <p
+            style={{ fontFamily: 'var(--font-script), "Brush Script MT", cursive' }}
+            className="pt-3 text-center text-lg text-zinc-700"
+          >
+            {caption}
+          </p>
         )}
       </div>
     </div>,

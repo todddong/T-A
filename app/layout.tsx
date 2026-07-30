@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Dancing_Script } from "next/font/google";
+import { Geist, Geist_Mono, Dancing_Script, Source_Serif_4 } from "next/font/google";
 import "./globals.css";
 import LoveEnvelope from "./LoveEnvelope";
 
@@ -19,6 +19,14 @@ const dancingScript = Dancing_Script({
   subsets: ["latin"],
 });
 
+// A clean editorial serif for large display text — the same family of look
+// used for big headline text on anthropic.com/claude.ai.
+const sourceSerif = Source_Serif_4({
+  variable: "--font-serif-display",
+  weight: ["400", "600"],
+  subsets: ["latin"],
+});
+
 export const metadata: Metadata = {
   title: "T + A",
   description:
@@ -33,7 +41,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${dancingScript.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${dancingScript.variable} ${sourceSerif.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col romantic-bg">
         <LoveEnvelope />

@@ -5,6 +5,27 @@ import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
 const SEEN_KEY = 'loveEnvelopeSeen'
 const CLOSE_ANIM_MS = 200
 
+type Message = {
+  id: string
+  heading: string
+  body: string
+}
+
+// Newest first — the inbox lists them in this order, and opening the
+// envelope always jumps straight to MESSAGES[0].
+const MESSAGES: Message[] = [
+  {
+    id: 'month-3',
+    heading: 'happy 3 months',
+    body: 'see you soon in Pittsburgh 😛!',
+  },
+  {
+    id: 'month-1',
+    heading: 'happy 1 month',
+    body: "I miss you and can't wait to try every matcha spot with you in Pittsburgh next year.",
+  },
+]
+
 const seenListeners = new Set<() => void>()
 
 function subscribeSeen(callback: () => void) {
@@ -43,6 +64,7 @@ export default function LoveEnvelope() {
   // before the element unmounts.
   const [mounted, setMounted] = useState(false)
   const [closing, setClosing] = useState(false)
+  const [selectedId, setSelectedId] = useState(MESSAGES[0].id)
   const closeTimerRef = useRef<number | null>(null)
   const popupRef = useRef<HTMLDivElement | null>(null)
   const buttonRef = useRef<HTMLButtonElement | null>(null)
@@ -54,6 +76,7 @@ export default function LoveEnvelope() {
     }
     setMounted(true)
     setClosing(false)
+    setSelectedId(MESSAGES[0].id)
     if (showBadge) markSeen()
   }
 
@@ -121,6 +144,7 @@ export default function LoveEnvelope() {
   }, [])
 
   const isOpenForAria = mounted && !closing
+  const selectedMessage = MESSAGES.find((m) => m.id === selectedId) ?? MESSAGES[0]
 
   return (
     <>
@@ -190,7 +214,7 @@ export default function LoveEnvelope() {
               <path d="M6 6l12 12M18 6L6 18" />
             </svg>
           </button>
-          <div className="px-8 pt-12 pb-20 flex flex-col items-center gap-4">
+          <div className="px-8 pt-12 pb-6 flex flex-col items-center gap-4">
             <p
               style={{
                 fontFamily: 'var(--font-script), "Brush Script MT", cursive',
@@ -198,7 +222,7 @@ export default function LoveEnvelope() {
               }}
               className="text-3xl text-center leading-tight"
             >
-              happy 1 month
+              {selectedMessage.heading}
             </p>
             <p
               style={{
@@ -207,7 +231,7 @@ export default function LoveEnvelope() {
               }}
               className="text-xl text-center leading-snug"
             >
-              I miss you and can&apos;t wait to try every matcha spot with you in Pittsburgh next year.
+              {selectedMessage.body}
             </p>
             <svg
               viewBox="0 0 24 24"
@@ -218,6 +242,30 @@ export default function LoveEnvelope() {
               <path d="M12 21s-7.5-4.8-9.5-9.5C1 7.5 4.3 4 7.7 4c1.9 0 3.4 1 4.3 2.3C12.9 5 14.4 4 16.3 4c3.4 0 6.7 3.5 5.2 7.5C19.5 16.2 12 21 12 21z" />
             </svg>
           </div>
+
+          {MESSAGES.length > 1 && (
+            <div className="border-t border-amber-900/15">
+              <p className="px-5 pt-2.5 pb-1 font-sans text-[10px] font-semibold uppercase tracking-widest text-amber-900/45">
+                Inbox
+              </p>
+              <div className="max-h-36 overflow-y-auto px-2.5 pb-3 flex flex-col gap-1">
+                {MESSAGES.map((m) => (
+                  <button
+                    key={m.id}
+                    type="button"
+                    onClick={() => setSelectedId(m.id)}
+                    className={`text-left px-3 py-2 rounded-md font-sans text-sm transition ${
+                      m.id === selectedId
+                        ? 'bg-amber-900/10 text-amber-950 font-semibold'
+                        : 'text-amber-900/60 hover:bg-amber-900/5 hover:text-amber-900/90'
+                    }`}
+                  >
+                    {m.heading}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
     </>

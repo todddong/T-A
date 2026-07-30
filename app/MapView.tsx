@@ -18,6 +18,7 @@ export default function MapView({ memories }: Props) {
   const mapContainer = useRef<HTMLDivElement | null>(null)
   // Leaflet types are loaded dynamically (client-only), so use `unknown` here.
   const mapRef = useRef<unknown>(null)
+  const fitToMarkersRef = useRef<(() => void) | null>(null)
   const [selected, setSelected] = useState<MemoryWithUrl | null>(null)
 
   useEffect(() => {
@@ -87,6 +88,7 @@ export default function MapView({ memories }: Props) {
         }
       }
       fitToMarkers()
+      fitToMarkersRef.current = fitToMarkers
 
       mapRef.current = map
 
@@ -101,6 +103,7 @@ export default function MapView({ memories }: Props) {
         window.clearTimeout(t)
         map.remove()
         mapRef.current = null
+        fitToMarkersRef.current = null
       }
     })
 
@@ -134,6 +137,28 @@ export default function MapView({ memories }: Props) {
         className="relative w-full h-[60vh] sm:h-[70vh] bg-zinc-950"
       >
         <div ref={mapContainer} className="absolute inset-0" />
+
+        <button
+          type="button"
+          onClick={() => fitToMarkersRef.current?.()}
+          aria-label="Recenter map"
+          className="absolute bottom-3 left-3 z-[400] h-9 w-9 flex items-center justify-center rounded-full bg-black/60 backdrop-blur-sm border border-pink-400/30 text-pink-200 shadow-[0_0_16px_-4px_rgba(255,61,119,0.6)] hover:text-white hover:border-pink-400/60 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-400"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="h-[18px] w-[18px]"
+            aria-hidden="true"
+          >
+            <circle cx="12" cy="12" r="2.5" fill="currentColor" stroke="none" />
+            <path d="M12 3v3M12 18v3M3 12h3M18 12h3" />
+            <circle cx="12" cy="12" r="7" />
+          </svg>
+        </button>
       </div>
 
       {selected && (
