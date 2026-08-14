@@ -29,7 +29,7 @@ const sourceSerif = Source_Serif_4({
 
 export const metadata: Metadata = {
   title: "T + A",
-  description: ":)",
+  description: "todd and annissa",
 };
 
 export default function RootLayout({
