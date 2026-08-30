@@ -9,7 +9,7 @@ photos) is stored in **Supabase**.
 
 - Next.js 16 (App Router) + React 19
 - Tailwind CSS v4
-- Leaflet + OpenStreetMap (CartoDB dark tiles) — no API key required
+- Leaflet + Esri Dark Gray Canvas tiles — no API key required
 - Supabase for the memory data + photo storage
 
 ## 1. Configure environment variables
@@ -23,7 +23,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_46oe__aij27mbJLjuJPLhw_7EnMN-Xx
 
 The Supabase values above point at the project that already has the
 `relationship_memories` and `relationship_gallery` tables seeded. No
-map token is needed — tiles come from free OpenStreetMap / CartoDB.
+map token is needed — tiles come from Esri's free Dark Gray Canvas basemap.
 
 ## 2. Install and run
 

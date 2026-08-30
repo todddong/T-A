@@ -40,14 +40,15 @@ export default function MapView({ memories }: Props) {
         worldCopyJump: true,
       })
 
-      // CartoDB Dark Matter, labels removed for a clean dark aesthetic.
+      // Esri Dark Gray Canvas (base only, no labels) — free, keyless tile
+      // service for a clean dark aesthetic. CARTO's equivalent free tiles
+      // started requiring an API key, so we moved off of it.
       L.tileLayer(
-        'https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png',
+        'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',
         {
           maxZoom: 19,
           attribution:
-            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-          subdomains: 'abcd',
+            'Esri, HERE, Garmin, &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, and the GIS user community',
         }
       ).addTo(map)
 
